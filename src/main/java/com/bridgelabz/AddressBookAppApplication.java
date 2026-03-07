@@ -4,6 +4,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.io.*;
 
+import com.opencsv.CSVWriter;
+import com.opencsv.CSVReader;
+
 public class AddressBookAppApplication {
 
     public static Contact createContact(Scanner sc) {
@@ -93,7 +96,7 @@ public class AddressBookAppApplication {
         String name = sc.nextLine();
 
         addressBook.removeIf(c -> c.getFirstName().equalsIgnoreCase(name));
-        System.out.println("Contact Deleted (if existed)");
+        System.out.println("Contact Deleted");
     }
 
     public static void addMultipleContacts(ArrayList<Contact> addressBook, Scanner sc){
@@ -156,39 +159,80 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // UC13 Write File
+    // UC13 Write TXT
     public static void writeToFile(List<Contact> contacts){
 
         try {
+
             FileWriter writer = new FileWriter("addressbook.txt");
 
             for(Contact c : contacts){
                 writer.write(c.toString());
-                writer.write("\n------------------\n");
+                writer.write("\n");
             }
 
             writer.close();
-            System.out.println("Contacts written to file");
 
-        } catch (IOException e) {
+            System.out.println("Contacts saved to TXT file");
+
+        } catch(Exception e){
             System.out.println("Error writing file");
         }
     }
 
-    // UC13 Read File
-    public static void readFromFile(){
+    // UC14 Write CSV
+    public static void writeToCSV(List<Contact> contacts){
 
         try {
-            File file = new File("addressbook.txt");
-            Scanner reader = new Scanner(file);
 
-            while(reader.hasNextLine())
-                System.out.println(reader.nextLine());
+            CSVWriter writer = new CSVWriter(new FileWriter("addressbook.csv"));
+
+            String[] header = {"FirstName","LastName","Address","City","State","Zip","Phone","Email"};
+            writer.writeNext(header);
+
+            for(Contact c : contacts){
+
+                String[] data = {
+                        c.getFirstName(),
+                        c.getLastName(),
+                        c.getAddress(),
+                        c.getCity(),
+                        c.getState(),
+                        c.getZip(),
+                        c.getPhoneNumber(),
+                        c.getEmail()
+                };
+
+                writer.writeNext(data);
+            }
+
+            writer.close();
+
+            System.out.println("Contacts written to CSV file");
+
+        } catch(Exception e){
+            System.out.println("Error writing CSV");
+        }
+    }
+
+    // UC14 Read CSV
+    public static void readFromCSV(){
+
+        try {
+
+            CSVReader reader = new CSVReader(new FileReader("addressbook.csv"));
+
+            String[] line;
+
+            while((line = reader.readNext()) != null){
+
+                System.out.println(Arrays.toString(line));
+            }
 
             reader.close();
 
-        } catch (Exception e) {
-            System.out.println("Error reading file");
+        } catch(Exception e){
+            System.out.println("Error reading CSV");
         }
     }
 
@@ -212,11 +256,11 @@ public class AddressBookAppApplication {
             System.out.println("7 View Persons by City");
             System.out.println("8 Count by City");
             System.out.println("9 Sort by Name");
-            System.out.println("10 Write Contacts to File");
-            System.out.println("11 Read Contacts from File");
-            System.out.println("12 Exit");
+            System.out.println("10 Write TXT File");
+            System.out.println("11 Write CSV File");
+            System.out.println("12 Read CSV File");
+            System.out.println("13 Exit");
 
-            System.out.print("Enter Choice: ");
             choice = sc.nextInt();
             sc.nextLine();
 
@@ -232,13 +276,14 @@ public class AddressBookAppApplication {
                 case 8 -> countByCity(addressBook);
                 case 9 -> sortByName(addressBook);
                 case 10 -> writeToFile(addressBook);
-                case 11 -> readFromFile();
-                case 12 -> System.out.println("Exiting Program");
+                case 11 -> writeToCSV(addressBook);
+                case 12 -> readFromCSV();
+                case 13 -> System.out.println("Exiting");
 
                 default -> System.out.println("Invalid Choice");
             }
 
-        }while(choice!=12);
+        }while(choice!=13);
 
         sc.close();
     }
