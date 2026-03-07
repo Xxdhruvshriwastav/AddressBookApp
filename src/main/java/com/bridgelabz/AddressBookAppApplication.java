@@ -123,7 +123,22 @@ public class AddressBookAppApplication {
     
     
     
+    public static void searchByCity(Map<String, ArrayList<Contact>> addressBooks, String city) {
+
+        addressBooks.values().stream()
+                .flatMap(list -> list.stream())
+                .filter(contact -> contact.getCity().equalsIgnoreCase(city))
+                .forEach(System.out::println);
+    }
     
+    
+    public static void searchByState(Map<String, ArrayList<Contact>> addressBooks, String state) {
+
+        addressBooks.values().stream()
+                .flatMap(list -> list.stream())
+                .filter(contact -> contact.getState().equalsIgnoreCase(state))
+                .forEach(System.out::println);
+    }
     
     
     
@@ -187,6 +202,8 @@ public class AddressBookAppApplication {
         	}
         	
         	
+        	// UC-7
+        	
         	if (exist) {
                 System.out.println("Contact with this name already exists!");
             } else {
@@ -200,11 +217,25 @@ public class AddressBookAppApplication {
         	choise = sc.next().charAt(0);
         	
         	
-        } while(choise == 'y' || choise == 'Y');
+        	} while(choise == 'y' || choise == 'Y');
         
         
         
+        // UC-8
         
+        Map<String, ArrayList<Contact>> addressBooks = new HashMap<>();
+
+        addressBooks.put("Home", addressBook);
+
+        System.out.print("Enter city to search: ");
+        String city = sc.nextLine();
+
+        searchByCity(addressBooks, city);
+
+        System.out.print("Enter state to search: ");
+        String state = sc.nextLine();
+
+        searchByState(addressBooks, state);
         
         
      
