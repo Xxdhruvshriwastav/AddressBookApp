@@ -167,8 +167,46 @@ public class AddressBookAppApplication {
         
         
         
-        // 
+        // UC-6
         
+        char choise;
+        
+        do {
+        	
+        	boolean exist = false;
+        	
+        	for(Contact c :addressBook) {
+        		
+        		if(c.getFirstName().equalsIgnoreCase(c.getFirstName())) {
+        			
+        			exist = false;
+        			break;
+        			
+        		}
+        	}
+        	
+        	
+        	if (exist) {
+                System.out.println("Contact with this name already exists!");
+            } else {
+            	
+            	Contact contact = addContact();   // UC1 method
+                addressBook.add(contact);
+                
+                System.out.println("Contact Added Successfully!");
+            }
+        	
+        	choise = sc.next().charAt(0);
+        	
+        	
+        } while(choise == 'y' || choise == 'Y');
+        
+        
+        
+        
+        
+        
+        // UC-7
         
         
 
