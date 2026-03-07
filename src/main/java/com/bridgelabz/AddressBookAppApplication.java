@@ -126,6 +126,7 @@ public class AddressBookAppApplication {
     
     
     
+    
 
     public static void main(String[] args) {
     	
@@ -206,22 +207,9 @@ public class AddressBookAppApplication {
         
         
         
-        // UC-7
-        
-        public void addPerson(ArrayList<Contact> addressBook, Contact person) {
-
-            boolean duplicate = addressBook.stream()
-                    .anyMatch(p -> p.getFirstName().equalsIgnoreCase(person.getFirstName())
-                            && p.getLastName().equalsIgnoreCase(person.getLastName()));
-
-            if (duplicate) {
-                System.out.println("Duplicate entry! Person already exists.");
-            } else {
-                addressBook.add(person);
-                System.out.println("Person added successfully.");
-            }
-       
-
+     
+            
+           
             
     }
 }
