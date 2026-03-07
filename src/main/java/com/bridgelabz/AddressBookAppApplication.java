@@ -35,16 +35,70 @@ public class AddressBookAppApplication {
 	}
 	
 	
+	// edit the Address book
+	
+	public static void editContact(ArrayList<Contact> addressBook) {
+
+	    Scanner sc = new Scanner(System.in);
+
+	    System.out.print("Enter first name of contact to edit: ");
+	    String name = sc.nextLine();
+
+	    boolean found = false;
+
+	    for (Contact contact : addressBook) {
+
+	        if (contact.getFirstName().equalsIgnoreCase(name)) {
+
+	            found = true;
+
+	            System.out.println("Enter new Address:");
+	            contact.setAddress(sc.nextLine());
+
+	            System.out.println("Enter new City:");
+	            contact.setCity(sc.nextLine());
+
+	            System.out.println("Enter new State:");
+	            contact.setState(sc.nextLine());
+
+	            System.out.println("Enter new Zip:");
+	            contact.setZip(sc.nextLine());
+
+	            System.out.println("Enter new Phone:");
+	            contact.setPhoneNumber(sc.nextLine());
+
+	            System.out.println("Enter new Email:");
+	            contact.setEmail(sc.nextLine());
+
+	            System.out.println("Contact Updated Successfully!");
+
+	            System.out.println(contact);
+
+	            break;
+	        }
+	    }
+
+	    if (!found) {
+	        System.out.println("Contact not found!");
+	    }
+	}
+	
+	
+	
+	
+	
+	
 
 	public static void main(String[] args) {
 		
 		
 		ArrayList<Contact> addressBook = new ArrayList<>();
 		
+		//adding
 		 addressBook.add(addContact());
 		
-		
-		
+		 // editing
+		 editContact(addressBook);
 		
 	}
 
