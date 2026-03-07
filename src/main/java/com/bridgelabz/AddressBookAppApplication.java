@@ -120,22 +120,50 @@ public class AddressBookAppApplication {
             System.out.println("User not found");
         }
     }
+    
+    
+    
+    
+    
+    
 
     public static void main(String[] args) {
+    	
+    	
 
-        SpringApplication.run(AddressBookAppApplication.class, args);
+       Scanner sc = new Scanner(System.in);
 
         System.out.println("Welcome to Address Book Program");
 
         ArrayList<Contact> addressBook = new ArrayList<>();
 
-        // UC1
+        // UC2
         addressBook.add(addContact());
 
-        // UC2
+        // UC3
         editContact(addressBook);
 
-        // UC3
-        deleteContact(addressBook);
+        // UC4
+       deleteContact(addressBook);
+        
+        
+        // UC 5 
+        
+        
+        char choice;
+        
+        do {
+
+            Contact contact = addContact();   // UC1 method
+            addressBook.add(contact);
+
+            System.out.println("Contact Added Successfully!");
+
+            System.out.print("Do you want to add another contact (y/n): ");
+            choice = sc.next().charAt(0);
+            sc.nextLine();
+
+        } while (choice == 'y' || choice == 'Y');
+
     }
 }
