@@ -1,17 +1,14 @@
 package com.bridgelabz;
 
 import java.util.*;
-import org.springframework.boot.SpringApplication;
+import java.util.stream.Collectors;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class AddressBookAppApplication {
 
-    // UC1 : Add Contact
-    public static Contact addContact() {
-
-        Scanner sc = new Scanner(System.in);
-
+    // UC1: Create Contact (read details)
+    public static Contact createContact(Scanner sc) {
         System.out.println("Enter Contact Details");
 
         System.out.print("First Name: ");
@@ -38,26 +35,31 @@ public class AddressBookAppApplication {
         System.out.print("Email: ");
         String email = sc.nextLine();
 
-        Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
-
-        return contact;
+        return new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
     }
 
-    // UC2 : Edit Contact
-    public static void editContact(ArrayList<Contact> addressBook) {
+    // UC2 + UC6 + UC7: Add Contact with unique/duplicate prevention by firstName
+    public static void addContact(ArrayList<Contact> addressBook, Scanner sc) {
+        Contact contact = createContact(sc);
 
-        Scanner sc = new Scanner(System.in);
+        boolean exists = addressBook.stream()
+                .anyMatch(c -> c.getFirstName().equalsIgnoreCase(contact.getFirstName()));
 
+        if (exists) {
+            System.out.println("Contact with this name already exists! Not added.");
+        } else {
+            addressBook.add(contact);
+            System.out.println("Contact Added Successfully!");
+        }
+    }
+
+    // UC3: Edit Contact
+    public static void editContact(ArrayList<Contact> addressBook, Scanner sc) {
         System.out.print("Enter first name of contact to edit: ");
         String name = sc.nextLine();
 
-        boolean found = false;
-
         for (Contact contact : addressBook) {
-
             if (contact.getFirstName().equalsIgnoreCase(name)) {
-
-                found = true;
 
                 System.out.println("Enter new Address:");
                 contact.setAddress(sc.nextLine());
@@ -78,204 +80,145 @@ public class AddressBookAppApplication {
                 contact.setEmail(sc.nextLine());
 
                 System.out.println("Contact Updated Successfully!");
-                System.out.println(contact);
-
-                break;
+                return;
             }
         }
 
-        if (!found) {
-            System.out.println("Contact not found!");
-        }
+        System.out.println("Contact not found!");
     }
 
-    // UC3 : Delete Contact
-    public static void deleteContact(ArrayList<Contact> addressBook) {
-
-        Scanner sc = new Scanner(System.in);
-
+    // UC4: Delete Contact
+    public static void deleteContact(ArrayList<Contact> addressBook, Scanner sc) {
         System.out.print("Enter first name of contact to delete: ");
         String name = sc.nextLine();
-
-        boolean found = false;
 
         Iterator<Contact> iterator = addressBook.iterator();
 
         while (iterator.hasNext()) {
-
             Contact contact = iterator.next();
-
             if (contact.getFirstName().equalsIgnoreCase(name)) {
-
                 iterator.remove();
-                found = true;
-
                 System.out.println("Contact deleted successfully!");
-
-                break;
+                return;
             }
         }
 
-        if (!found) {
-            System.out.println("User not found");
-        }
+        System.out.println("User not found");
     }
-    
-    
-    
-    public static void searchByCity(Map<String, ArrayList<Contact>> addressBooks, String city) {
 
-        addressBooks.values().stream()
-                .flatMap(list -> list.stream())
-                .filter(contact -> contact.getCity().equalsIgnoreCase(city))
+    // UC5: Add Multiple Contacts
+    public static void addMultipleContacts(ArrayList<Contact> addressBook, Scanner sc) {
+        char choice;
+        do {
+            addContact(addressBook, sc);
+            System.out.print("Add another contact? (y/n): ");
+            choice = sc.next().charAt(0);
+            sc.nextLine();
+        } while (choice == 'y' || choice == 'Y');
+    }
+
+    // UC8: Search by City
+    public static void searchByCity(ArrayList<Contact> addressBook, Scanner sc) {
+        System.out.print("Enter city to search: ");
+        String city = sc.nextLine();
+
+        addressBook.stream()
+                .filter(c -> c.getCity().equalsIgnoreCase(city))
                 .forEach(System.out::println);
     }
-    
-    
-    public static void searchByState(Map<String, ArrayList<Contact>> addressBooks, String state) {
 
-        addressBooks.values().stream()
-                .flatMap(list -> list.stream())
-                .filter(contact -> contact.getState().equalsIgnoreCase(state))
+    // UC8: Search by State
+    public static void searchByState(ArrayList<Contact> addressBook, Scanner sc) {
+        System.out.print("Enter state to search: ");
+        String state = sc.nextLine();
+
+        addressBook.stream()
+                .filter(c -> c.getState().equalsIgnoreCase(state))
                 .forEach(System.out::println);
     }
-    
-    
-    // uc-9
-    
+
+    // UC9: View persons grouped by city
     public static void viewPersonsByCity(List<Contact> contacts) {
-
         Map<String, List<Contact>> cityMap =
-                contacts.stream().collect(
-                        java.util.stream.Collectors.groupingBy(Contact::getCity));
+                contacts.stream().collect(Collectors.groupingBy(Contact::getCity));
 
         cityMap.forEach((city, persons) -> {
             System.out.println("\nCity: " + city);
             persons.forEach(System.out::println);
         });
     }
-    
-    
-    public static void viewPersonsByState(List<Contact> contacts) {
 
+    // UC9: View persons grouped by state
+    public static void viewPersonsByState(List<Contact> contacts) {
         Map<String, List<Contact>> stateMap =
-                contacts.stream().collect(
-                        java.util.stream.Collectors.groupingBy(Contact::getState));
+                contacts.stream().collect(Collectors.groupingBy(Contact::getState));
 
         stateMap.forEach((state, persons) -> {
             System.out.println("\nState: " + state);
             persons.forEach(System.out::println);
         });
     }
-    
+
+    // UC10: Count by City
+    public static void countByCity(List<Contact> contacts) {
+        Map<String, Long> cityCount =
+                contacts.stream().collect(Collectors.groupingBy(Contact::getCity, Collectors.counting()));
+
+        cityCount.forEach((city, count) ->
+                System.out.println(city + " -> " + count));
+    }
+
+    // UC10: Count by State
+    public static void countByState(List<Contact> contacts) {
+        Map<String, Long> stateCount =
+                contacts.stream().collect(Collectors.groupingBy(Contact::getState, Collectors.counting()));
+
+        stateCount.forEach((state, count) ->
+                System.out.println(state + " -> " + count));
+    }
 
     public static void main(String[] args) {
-    	
-    	
 
-       Scanner sc = new Scanner(System.in);
-
-        System.out.println("Welcome to Address Book Program");
-
+        Scanner sc = new Scanner(System.in);
         ArrayList<Contact> addressBook = new ArrayList<>();
 
-        // UC2
-        addressBook.add(addContact());
+        int choice;
 
-        // UC3
-        editContact(addressBook);
-
-        // UC4
-       deleteContact(addressBook);
-        
-        
-        // UC 5 
-        
-        
-        char choice;
-        
         do {
+            System.out.println("\n===== Address Book Menu =====");
+            System.out.println("1. Add Contact");
+            System.out.println("2. Edit Contact");
+            System.out.println("3. Delete Contact");
+            System.out.println("4. Add Multiple Contacts");
+            System.out.println("5. Search by City");
+            System.out.println("6. Search by State");
+            System.out.println("7. View Persons by City");
+            System.out.println("8. View Persons by State");
+            System.out.println("9. Count Contacts by City");
+            System.out.println("10. Count Contacts by State");
+            System.out.println("11. Exit");
 
-            Contact contact = addContact();   // UC1 method
-            addressBook.add(contact);
-
-            System.out.println("Contact Added Successfully!");
-
-            System.out.print("Do you want to add another contact (y/n): ");
-            choice = sc.next().charAt(0);
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
             sc.nextLine();
 
-        } while (choice == 'y' || choice == 'Y');
-        
-        
-        
-        // UC-6
-        
-        char choise;
-        
-        do {
-        	
-        	boolean exist = false;
-        	
-        	for(Contact c :addressBook) {
-        		
-        		if(c.getFirstName().equalsIgnoreCase(c.getFirstName())) {
-        			
-        			exist = false;
-        			break;
-        			
-        		}
-        	}
-        	
-        	
-        	// UC-7
-        	
-        	if (exist) {
-                System.out.println("Contact with this name already exists!");
-            } else {
-            	
-            	Contact contact = addContact();   // UC1 method
-                addressBook.add(contact);
-                
-                System.out.println("Contact Added Successfully!");
+            switch (choice) {
+                case 1 -> addContact(addressBook, sc);
+                case 2 -> editContact(addressBook, sc);
+                case 3 -> deleteContact(addressBook, sc);
+                case 4 -> addMultipleContacts(addressBook, sc);
+                case 5 -> searchByCity(addressBook, sc);
+                case 6 -> searchByState(addressBook, sc);
+                case 7 -> viewPersonsByCity(addressBook);
+                case 8 -> viewPersonsByState(addressBook);
+                case 9 -> countByCity(addressBook);
+                case 10 -> countByState(addressBook);
+                case 11 -> System.out.println("Exiting...");
+                default -> System.out.println("Invalid choice");
             }
-        	
-        	choise = sc.next().charAt(0);
-        	
-        	
-        	} while(choise == 'y' || choise == 'Y');
-        
-        
-        
-        // UC-8
-        
-        Map<String, ArrayList<Contact>> addressBooks = new HashMap<>();
 
-        addressBooks.put("Home", addressBook);
+        } while (choice != 11);
 
-        System.out.print("Enter city to search: ");
-        String city = sc.nextLine();
-
-        searchByCity(addressBooks, city);
-
-        System.out.print("Enter state to search: ");
-        String state = sc.nextLine();
-
-        searchByState(addressBooks, state);
-        
-        
-     
-        
-        // uc-9
-        System.out.println("\nPersons grouped by City:");
-        viewPersonsByCity(addressBook);
-
-        System.out.println("\nPersons grouped by State:");
-        viewPersonsByState(addressBook);
-        
-        
-        
-           
-            
+        sc.close();
     }
 }
