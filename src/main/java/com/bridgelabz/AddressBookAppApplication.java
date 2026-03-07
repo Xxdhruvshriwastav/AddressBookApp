@@ -89,38 +89,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // UC3 : Delete Contact
-    public static void deleteContact(ArrayList<Contact> addressBook) {
-
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Enter first name of contact to delete: ");
-        String name = sc.nextLine();
-
-        boolean found = false;
-
-        Iterator<Contact> iterator = addressBook.iterator();
-
-        while (iterator.hasNext()) {
-
-            Contact contact = iterator.next();
-
-            if (contact.getFirstName().equalsIgnoreCase(name)) {
-
-                iterator.remove();
-                found = true;
-
-                System.out.println("Contact deleted successfully!");
-
-                break;
-            }
-        }
-
-        if (!found) {
-            System.out.println("User not found");
-        }
-    }
-
+    
     public static void main(String[] args) {
 
         SpringApplication.run(AddressBookAppApplication.class, args);
@@ -135,7 +104,6 @@ public class AddressBookAppApplication {
         // UC2
         editContact(addressBook);
 
-        // UC3
-        deleteContact(addressBook);
+        
     }
 }
