@@ -177,6 +177,19 @@ public class AddressBookAppApplication {
                 System.out.println(state + " -> " + count));
     }
 
+    
+    public static void sortByName(List<Contact> contacts) {
+
+        List<Contact> sortedList = contacts.stream()
+                .sorted(Comparator.comparing(Contact::getFirstName))
+                .toList();
+
+        System.out.println("\nContacts sorted alphabetically:");
+
+        sortedList.forEach(System.out::println);
+    }
+    
+    
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -196,7 +209,8 @@ public class AddressBookAppApplication {
             System.out.println("8. View Persons by State");
             System.out.println("9. Count Contacts by City");
             System.out.println("10. Count Contacts by State");
-            System.out.println("11. Exit");
+            System.out.println("11. Sort Contacts by Name");
+            System.out.println("12. Exit");
 
             System.out.print("Enter choice: ");
             choice = sc.nextInt();
@@ -213,7 +227,8 @@ public class AddressBookAppApplication {
                 case 8 -> viewPersonsByState(addressBook);
                 case 9 -> countByCity(addressBook);
                 case 10 -> countByState(addressBook);
-                case 11 -> System.out.println("Exiting...");
+                case 11 -> sortByName(addressBook); 
+                case 12 -> System.out.println("Exiting...");
                 default -> System.out.println("Invalid choice");
             }
 
