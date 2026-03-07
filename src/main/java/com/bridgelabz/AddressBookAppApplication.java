@@ -141,6 +141,32 @@ public class AddressBookAppApplication {
     }
     
     
+    // uc-9
+    
+    public static void viewPersonsByCity(List<Contact> contacts) {
+
+        Map<String, List<Contact>> cityMap =
+                contacts.stream().collect(
+                        java.util.stream.Collectors.groupingBy(Contact::getCity));
+
+        cityMap.forEach((city, persons) -> {
+            System.out.println("\nCity: " + city);
+            persons.forEach(System.out::println);
+        });
+    }
+    
+    
+    public static void viewPersonsByState(List<Contact> contacts) {
+
+        Map<String, List<Contact>> stateMap =
+                contacts.stream().collect(
+                        java.util.stream.Collectors.groupingBy(Contact::getState));
+
+        stateMap.forEach((state, persons) -> {
+            System.out.println("\nState: " + state);
+            persons.forEach(System.out::println);
+        });
+    }
     
 
     public static void main(String[] args) {
@@ -239,7 +265,16 @@ public class AddressBookAppApplication {
         
         
      
-            
+        
+        // uc-9
+        System.out.println("\nPersons grouped by City:");
+        viewPersonsByCity(addressBook);
+
+        System.out.println("\nPersons grouped by State:");
+        viewPersonsByState(addressBook);
+        
+        
+        
            
             
     }
