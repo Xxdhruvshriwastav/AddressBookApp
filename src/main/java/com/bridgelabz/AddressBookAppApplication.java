@@ -1,105 +1,141 @@
 package com.bridgelabz;
+
 import java.util.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class AddressBookAppApplication {
-	
-	
-	public static Contact addContact() {
-		
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter details:- ");
-		System.out.print("First name: ");
-		String firstName = sc.nextLine();
-		System.out.print("Last name: ");
-		String lastName = sc.nextLine();
-		System.out.print("Address: ");
-		String address = sc.nextLine();
-		System.out.print("City: ");
-		String city = sc.nextLine();
-		System.out.print("State: ");
-		String state = sc.nextLine();
-		System.out.print("Zip code: ");
-		int zip = sc.nextInt();
-		System.out.println("Phone number: ");
-		int phoneNumber = sc.nextInt();
-		sc.nextLine();
-		System.out.println("Email: ");
-		String email = sc.nextLine();
-		
-		Contact c = new Contact(firstName, lastName, address, city, state, city, state, email);
-		return c;
-		
-	}
-	
-	
-	// edit the Address book
-	
-	public static void editContact(ArrayList<Contact> addressBook) {
 
-	    Scanner sc = new Scanner(System.in);
+    // UC1 : Add Contact
+    public static Contact addContact() {
 
-	    System.out.print("Enter first name of contact to edit: ");
-	    String name = sc.nextLine();
+        Scanner sc = new Scanner(System.in);
 
-	    boolean found = false;
+        System.out.println("Enter Contact Details");
 
-	    for (Contact contact : addressBook) {
+        System.out.print("First Name: ");
+        String firstName = sc.nextLine();
 
-	        if (contact.getFirstName().equalsIgnoreCase(name)) {
+        System.out.print("Last Name: ");
+        String lastName = sc.nextLine();
 
-	            found = true;
+        System.out.print("Address: ");
+        String address = sc.nextLine();
 
-	            System.out.println("Enter new Address:");
-	            contact.setAddress(sc.nextLine());
+        System.out.print("City: ");
+        String city = sc.nextLine();
 
-	            System.out.println("Enter new City:");
-	            contact.setCity(sc.nextLine());
+        System.out.print("State: ");
+        String state = sc.nextLine();
 
-	            System.out.println("Enter new State:");
-	            contact.setState(sc.nextLine());
+        System.out.print("Zip: ");
+        String zip = sc.nextLine();
 
-	            System.out.println("Enter new Zip:");
-	            contact.setZip(sc.nextLine());
+        System.out.print("Phone Number: ");
+        String phoneNumber = sc.nextLine();
 
-	            System.out.println("Enter new Phone:");
-	            contact.setPhoneNumber(sc.nextLine());
+        System.out.print("Email: ");
+        String email = sc.nextLine();
 
-	            System.out.println("Enter new Email:");
-	            contact.setEmail(sc.nextLine());
+        Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
 
-	            System.out.println("Contact Updated Successfully!");
+        return contact;
+    }
 
-	            System.out.println(contact);
+    // UC2 : Edit Contact
+    public static void editContact(ArrayList<Contact> addressBook) {
 
-	            break;
-	        }
-	    }
+        Scanner sc = new Scanner(System.in);
 
-	    if (!found) {
-	        System.out.println("Contact not found!");
-	    }
-	}
-	
-	
-	
-	
-	
-	
+        System.out.print("Enter first name of contact to edit: ");
+        String name = sc.nextLine();
 
-	public static void main(String[] args) {
-		
-		
-		ArrayList<Contact> addressBook = new ArrayList<>();
-		
-		//adding
-		 addressBook.add(addContact());
-		
-		 // editing
-		 editContact(addressBook);
-		
-	}
+        boolean found = false;
 
+        for (Contact contact : addressBook) {
+
+            if (contact.getFirstName().equalsIgnoreCase(name)) {
+
+                found = true;
+
+                System.out.println("Enter new Address:");
+                contact.setAddress(sc.nextLine());
+
+                System.out.println("Enter new City:");
+                contact.setCity(sc.nextLine());
+
+                System.out.println("Enter new State:");
+                contact.setState(sc.nextLine());
+
+                System.out.println("Enter new Zip:");
+                contact.setZip(sc.nextLine());
+
+                System.out.println("Enter new Phone:");
+                contact.setPhoneNumber(sc.nextLine());
+
+                System.out.println("Enter new Email:");
+                contact.setEmail(sc.nextLine());
+
+                System.out.println("Contact Updated Successfully!");
+                System.out.println(contact);
+
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Contact not found!");
+        }
+    }
+
+    // UC3 : Delete Contact
+    public static void deleteContact(ArrayList<Contact> addressBook) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter first name of contact to delete: ");
+        String name = sc.nextLine();
+
+        boolean found = false;
+
+        Iterator<Contact> iterator = addressBook.iterator();
+
+        while (iterator.hasNext()) {
+
+            Contact contact = iterator.next();
+
+            if (contact.getFirstName().equalsIgnoreCase(name)) {
+
+                iterator.remove();
+                found = true;
+
+                System.out.println("Contact deleted successfully!");
+
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("User not found");
+        }
+    }
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(AddressBookAppApplication.class, args);
+
+        System.out.println("Welcome to Address Book Program");
+
+        ArrayList<Contact> addressBook = new ArrayList<>();
+
+        // UC1
+        addressBook.add(addContact());
+
+        // UC2
+        editContact(addressBook);
+
+        // UC3
+        deleteContact(addressBook);
+    }
 }
