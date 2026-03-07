@@ -2,10 +2,10 @@ package com.bridgelabz;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.io.*;
 
 public class AddressBookAppApplication {
 
-    // UC1 Create Contact
     public static Contact createContact(Scanner sc) {
 
         System.out.println("Enter Contact Details");
@@ -37,7 +37,6 @@ public class AddressBookAppApplication {
         return new Contact(firstName,lastName,address,city,state,zip,phoneNumber,email);
     }
 
-    // UC2 Add Contact
     public static void addContact(ArrayList<Contact> addressBook, Scanner sc) {
 
         Contact contact = createContact(sc);
@@ -45,15 +44,14 @@ public class AddressBookAppApplication {
         boolean exists = addressBook.stream()
                 .anyMatch(c -> c.getFirstName().equalsIgnoreCase(contact.getFirstName()));
 
-        if (exists) {
+        if (exists)
             System.out.println("Contact already exists!");
-        } else {
+        else {
             addressBook.add(contact);
             System.out.println("Contact Added Successfully");
         }
     }
 
-    // UC3 Edit Contact
     public static void editContact(ArrayList<Contact> addressBook, Scanner sc) {
 
         System.out.print("Enter First Name to Edit: ");
@@ -89,29 +87,15 @@ public class AddressBookAppApplication {
         System.out.println("Contact Not Found");
     }
 
-    // UC4 Delete Contact
     public static void deleteContact(ArrayList<Contact> addressBook, Scanner sc){
 
         System.out.print("Enter First Name to Delete: ");
         String name = sc.nextLine();
 
-        Iterator<Contact> iterator = addressBook.iterator();
-
-        while(iterator.hasNext()){
-
-            Contact c = iterator.next();
-
-            if(c.getFirstName().equalsIgnoreCase(name)){
-                iterator.remove();
-                System.out.println("Contact Deleted");
-                return;
-            }
-        }
-
-        System.out.println("Contact Not Found");
+        addressBook.removeIf(c -> c.getFirstName().equalsIgnoreCase(name));
+        System.out.println("Contact Deleted (if existed)");
     }
 
-    // UC5 Add Multiple Contacts
     public static void addMultipleContacts(ArrayList<Contact> addressBook, Scanner sc){
 
         char choice;
@@ -126,7 +110,6 @@ public class AddressBookAppApplication {
         }while(choice=='y'||choice=='Y');
     }
 
-    // UC8 Search by City
     public static void searchByCity(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter City: ");
@@ -137,7 +120,6 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // UC8 Search by State
     public static void searchByState(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter State: ");
@@ -148,7 +130,6 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // UC9 View Persons By City
     public static void viewPersonsByCity(List<Contact> contacts){
 
         Map<String,List<Contact>> cityMap =
@@ -160,19 +141,6 @@ public class AddressBookAppApplication {
         });
     }
 
-    // UC9 View Persons By State
-    public static void viewPersonsByState(List<Contact> contacts){
-
-        Map<String,List<Contact>> stateMap =
-                contacts.stream().collect(Collectors.groupingBy(Contact::getState));
-
-        stateMap.forEach((state,persons)->{
-            System.out.println("\nState: "+state);
-            persons.forEach(System.out::println);
-        });
-    }
-
-    // UC10 Count By City
     public static void countByCity(List<Contact> contacts){
 
         Map<String,Long> cityCount =
@@ -181,16 +149,6 @@ public class AddressBookAppApplication {
         cityCount.forEach((city,count)-> System.out.println(city+" -> "+count));
     }
 
-    // UC10 Count By State
-    public static void countByState(List<Contact> contacts){
-
-        Map<String,Long> stateCount =
-                contacts.stream().collect(Collectors.groupingBy(Contact::getState,Collectors.counting()));
-
-        stateCount.forEach((state,count)-> System.out.println(state+" -> "+count));
-    }
-
-    // UC11 Sort By Name
     public static void sortByName(List<Contact> contacts){
 
         contacts.stream()
@@ -198,30 +156,41 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // UC12 Sort By City
-    public static void sortByCity(List<Contact> contacts){
+    // UC13 Write File
+    public static void writeToFile(List<Contact> contacts){
 
-        contacts.stream()
-                .sorted(Comparator.comparing(Contact::getCity))
-                .forEach(System.out::println);
+        try {
+            FileWriter writer = new FileWriter("addressbook.txt");
+
+            for(Contact c : contacts){
+                writer.write(c.toString());
+                writer.write("\n------------------\n");
+            }
+
+            writer.close();
+            System.out.println("Contacts written to file");
+
+        } catch (IOException e) {
+            System.out.println("Error writing file");
+        }
     }
 
-    // UC12 Sort By State
-    public static void sortByState(List<Contact> contacts){
+    // UC13 Read File
+    public static void readFromFile(){
 
-        contacts.stream()
-                .sorted(Comparator.comparing(Contact::getState))
-                .forEach(System.out::println);
+        try {
+            File file = new File("addressbook.txt");
+            Scanner reader = new Scanner(file);
+
+            while(reader.hasNextLine())
+                System.out.println(reader.nextLine());
+
+            reader.close();
+
+        } catch (Exception e) {
+            System.out.println("Error reading file");
+        }
     }
-
-    // UC12 Sort By Zip
-    public static void sortByZip(List<Contact> contacts){
-
-        contacts.stream()
-                .sorted(Comparator.comparing(Contact::getZip))
-                .forEach(System.out::println);
-    }
-
 
     public static void main(String[] args) {
 
@@ -241,14 +210,11 @@ public class AddressBookAppApplication {
             System.out.println("5 Search by City");
             System.out.println("6 Search by State");
             System.out.println("7 View Persons by City");
-            System.out.println("8 View Persons by State");
-            System.out.println("9 Count by City");
-            System.out.println("10 Count by State");
-            System.out.println("11 Sort by Name");
-            System.out.println("12 Sort by City");
-            System.out.println("13 Sort by State");
-            System.out.println("14 Sort by Zip");
-            System.out.println("15 Exit");
+            System.out.println("8 Count by City");
+            System.out.println("9 Sort by Name");
+            System.out.println("10 Write Contacts to File");
+            System.out.println("11 Read Contacts from File");
+            System.out.println("12 Exit");
 
             System.out.print("Enter Choice: ");
             choice = sc.nextInt();
@@ -263,20 +229,16 @@ public class AddressBookAppApplication {
                 case 5 -> searchByCity(addressBook,sc);
                 case 6 -> searchByState(addressBook,sc);
                 case 7 -> viewPersonsByCity(addressBook);
-                case 8 -> viewPersonsByState(addressBook);
-                case 9 -> countByCity(addressBook);
-                case 10 -> countByState(addressBook);
-                case 11 -> sortByName(addressBook);
-                case 12 -> sortByCity(addressBook);
-                case 13 -> sortByState(addressBook);
-                case 14 -> sortByZip(addressBook);
-
-                case 15 -> System.out.println("Exiting Program");
+                case 8 -> countByCity(addressBook);
+                case 9 -> sortByName(addressBook);
+                case 10 -> writeToFile(addressBook);
+                case 11 -> readFromFile();
+                case 12 -> System.out.println("Exiting Program");
 
                 default -> System.out.println("Invalid Choice");
             }
 
-        }while(choice!=15);
+        }while(choice!=12);
 
         sc.close();
     }
