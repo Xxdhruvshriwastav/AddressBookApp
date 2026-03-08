@@ -6,9 +6,11 @@ import java.io.*;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.CSVReader;
+import com.google.gson.Gson;
 
 public class AddressBookAppApplication {
 
+    // ---------- Create Contact ----------
     public static Contact createContact(Scanner sc) {
 
         System.out.println("Enter Contact Details");
@@ -40,6 +42,7 @@ public class AddressBookAppApplication {
         return new Contact(firstName,lastName,address,city,state,zip,phoneNumber,email);
     }
 
+    // ---------- Add Contact ----------
     public static void addContact(ArrayList<Contact> addressBook, Scanner sc) {
 
         Contact contact = createContact(sc);
@@ -55,6 +58,7 @@ public class AddressBookAppApplication {
         }
     }
 
+    // ---------- Edit Contact ----------
     public static void editContact(ArrayList<Contact> addressBook, Scanner sc) {
 
         System.out.print("Enter First Name to Edit: ");
@@ -90,6 +94,7 @@ public class AddressBookAppApplication {
         System.out.println("Contact Not Found");
     }
 
+    // ---------- Delete Contact ----------
     public static void deleteContact(ArrayList<Contact> addressBook, Scanner sc){
 
         System.out.print("Enter First Name to Delete: ");
@@ -99,6 +104,7 @@ public class AddressBookAppApplication {
         System.out.println("Contact Deleted");
     }
 
+    // ---------- Add Multiple ----------
     public static void addMultipleContacts(ArrayList<Contact> addressBook, Scanner sc){
 
         char choice;
@@ -113,6 +119,7 @@ public class AddressBookAppApplication {
         }while(choice=='y'||choice=='Y');
     }
 
+    // ---------- Search ----------
     public static void searchByCity(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter City: ");
@@ -133,6 +140,7 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
+    // ---------- View & Count ----------
     public static void viewPersonsByCity(List<Contact> contacts){
 
         Map<String,List<Contact>> cityMap =
@@ -152,6 +160,7 @@ public class AddressBookAppApplication {
         cityCount.forEach((city,count)-> System.out.println(city+" -> "+count));
     }
 
+    // ---------- Sort ----------
     public static void sortByName(List<Contact> contacts){
 
         contacts.stream()
@@ -159,7 +168,7 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // UC13 Write TXT
+    // ---------- UC13 Write TXT ----------
     public static void writeToFile(List<Contact> contacts){
 
         try {
@@ -180,7 +189,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // UC14 Write CSV
+    // ---------- UC14 Write CSV ----------
     public static void writeToCSV(List<Contact> contacts){
 
         try {
@@ -215,7 +224,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // UC14 Read CSV
+    // ---------- UC14 Read CSV ----------
     public static void readFromCSV(){
 
         try {
@@ -236,10 +245,56 @@ public class AddressBookAppApplication {
         }
     }
 
+    // ---------- UC15 Write JSON ----------
+    public static void writeToJSON(List<Contact> contacts){
+
+        try {
+
+            Gson gson = new Gson();
+            FileWriter writer = new FileWriter("addressbook.json");
+
+            gson.toJson(contacts, writer);
+
+            writer.close();
+
+            System.out.println("Contacts written to JSON file");
+
+        } catch(Exception e){
+            System.out.println("Error writing JSON");
+        }
+    }
+
+    // ---------- UC15 Read JSON ----------
+    public static void readFromJSON(){
+
+        try {
+
+            Gson gson = new Gson();
+
+            FileReader reader = new FileReader("addressbook.json");
+
+            Contact[] contacts = gson.fromJson(reader, Contact[].class);
+
+            for(Contact c : contacts){
+                System.out.println(c);
+            }
+
+            reader.close();
+
+        } catch(Exception e){
+            System.out.println("Error reading JSON");
+        }
+    }
+
+    // ---------- MAIN ----------
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
+
+        // UC16 Fetch contacts from DB
+        AddressBookDBService dbService = AddressBookDBService.getInstance();
         ArrayList<Contact> addressBook = new ArrayList<>();
+        addressBook.addAll(dbService.readContacts());
 
         int choice;
 
@@ -259,7 +314,9 @@ public class AddressBookAppApplication {
             System.out.println("10 Write TXT File");
             System.out.println("11 Write CSV File");
             System.out.println("12 Read CSV File");
-            System.out.println("13 Exit");
+            System.out.println("13 Write JSON File");
+            System.out.println("14 Read JSON File");
+            System.out.println("15 Exit");
 
             choice = sc.nextInt();
             sc.nextLine();
@@ -278,12 +335,14 @@ public class AddressBookAppApplication {
                 case 10 -> writeToFile(addressBook);
                 case 11 -> writeToCSV(addressBook);
                 case 12 -> readFromCSV();
-                case 13 -> System.out.println("Exiting");
+                case 13 -> writeToJSON(addressBook);
+                case 14 -> readFromJSON();
+                case 15 -> System.out.println("Exiting");
 
                 default -> System.out.println("Invalid Choice");
             }
 
-        }while(choice!=13);
+        }while(choice!=15);
 
         sc.close();
     }
