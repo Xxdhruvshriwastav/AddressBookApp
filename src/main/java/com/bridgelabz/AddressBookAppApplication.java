@@ -96,21 +96,6 @@ public class AddressBookAppApplication {
         System.out.println("Contact Deleted");
     }
 
-    public static void addMultipleContacts(ArrayList<Contact> addressBook,Scanner sc){
-
-        char choice;
-
-        do{
-
-            addContact(addressBook,sc);
-
-            System.out.print("Add another contact? (y/n): ");
-            choice = sc.next().charAt(0);
-            sc.nextLine();
-
-        }while(choice=='y'||choice=='Y');
-    }
-
     public static void searchByCity(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter City: ");
@@ -275,6 +260,22 @@ public class AddressBookAppApplication {
         }
     }
 
+    // UC18 Retrieve by Date Range
+    public static void retrieveContactsByDate(Scanner sc){
+
+        AddressBookDBService dbService = AddressBookDBService.getInstance();
+
+        System.out.print("Enter Start Date (YYYY-MM-DD): ");
+        String start = sc.nextLine();
+
+        System.out.print("Enter End Date (YYYY-MM-DD): ");
+        String end = sc.nextLine();
+
+        List<Contact> contacts = dbService.getContactsByDateRange(start,end);
+
+        contacts.forEach(System.out::println);
+    }
+
     public static void main(String[] args){
 
         Scanner sc = new Scanner(System.in);
@@ -294,17 +295,17 @@ public class AddressBookAppApplication {
             System.out.println("1 Add Contact");
             System.out.println("2 Edit Contact");
             System.out.println("3 Delete Contact");
-            System.out.println("4 Add Multiple Contacts");
-            System.out.println("5 Search by City");
-            System.out.println("6 Search by State");
-            System.out.println("7 View Persons by City");
-            System.out.println("8 Count by City");
-            System.out.println("9 Sort by Name");
-            System.out.println("10 Write TXT File");
-            System.out.println("11 Write CSV File");
-            System.out.println("12 Read CSV File");
-            System.out.println("13 Write JSON File");
-            System.out.println("14 Read JSON File");
+            System.out.println("4 Search by City");
+            System.out.println("5 Search by State");
+            System.out.println("6 View Persons by City");
+            System.out.println("7 Count by City");
+            System.out.println("8 Sort by Name");
+            System.out.println("9 Write TXT File");
+            System.out.println("10 Write CSV File");
+            System.out.println("11 Read CSV File");
+            System.out.println("12 Write JSON File");
+            System.out.println("13 Read JSON File");
+            System.out.println("14 Retrieve Contacts by Date");
             System.out.println("15 Exit");
 
             choice = sc.nextInt();
@@ -315,17 +316,17 @@ public class AddressBookAppApplication {
                 case 1 -> addContact(addressBook,sc);
                 case 2 -> editContact(addressBook,sc);
                 case 3 -> deleteContact(addressBook,sc);
-                case 4 -> addMultipleContacts(addressBook,sc);
-                case 5 -> searchByCity(addressBook,sc);
-                case 6 -> searchByState(addressBook,sc);
-                case 7 -> viewPersonsByCity(addressBook);
-                case 8 -> countByCity(addressBook);
-                case 9 -> sortByName(addressBook);
-                case 10 -> writeToFile(addressBook);
-                case 11 -> writeToCSV(addressBook);
-                case 12 -> readFromCSV();
-                case 13 -> writeToJSON(addressBook);
-                case 14 -> readFromJSON();
+                case 4 -> searchByCity(addressBook,sc);
+                case 5 -> searchByState(addressBook,sc);
+                case 6 -> viewPersonsByCity(addressBook);
+                case 7 -> countByCity(addressBook);
+                case 8 -> sortByName(addressBook);
+                case 9 -> writeToFile(addressBook);
+                case 10 -> writeToCSV(addressBook);
+                case 11 -> readFromCSV();
+                case 12 -> writeToJSON(addressBook);
+                case 13 -> readFromJSON();
+                case 14 -> retrieveContactsByDate(sc);
                 case 15 -> System.out.println("Exiting");
 
                 default -> System.out.println("Invalid Choice");
