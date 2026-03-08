@@ -341,9 +341,11 @@ public class AddressBookAppApplication {
 
                 default -> System.out.println("Invalid Choice");
             }
+            
 
         }while(choice!=15);
 
         sc.close();
+        
     }
 }
