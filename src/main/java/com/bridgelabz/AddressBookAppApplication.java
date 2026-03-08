@@ -136,8 +136,10 @@ public class AddressBookAppApplication {
                 contacts.stream().collect(Collectors.groupingBy(Contact::getCity));
 
         cityMap.forEach((city,persons)->{
+
             System.out.println("\nCity: "+city);
             persons.forEach(System.out::println);
+
         });
     }
 
@@ -160,6 +162,7 @@ public class AddressBookAppApplication {
     public static void writeToFile(List<Contact> contacts){
 
         try{
+
             FileWriter writer = new FileWriter("addressbook.txt");
 
             for(Contact c:contacts){
@@ -300,6 +303,49 @@ public class AddressBookAppApplication {
         dbService.countContactsByState();
     }
 
+    // UC21 Threads
+    public static void addMultipleContactsUsingThreads(){
+
+        List<Contact> contacts = List.of(
+
+                new Contact("Amit","Verma","MG Road","Delhi","Delhi","110001","9999999991","amit@gmail.com"),
+                new Contact("Rohit","Sharma","Main Road","Patna","Bihar","800001","9999999992","rohit@gmail.com"),
+                new Contact("Priya","Singh","Park Street","Kolkata","WB","700001","9999999993","priya@gmail.com")
+
+        );
+
+        List<Thread> threads = new ArrayList<>();
+
+        for(Contact contact : contacts){
+
+            Thread thread = new Thread(() -> {
+
+                AddressBookDBService dbService = AddressBookDBService.getInstance();
+
+                dbService.addContactToDB(contact);
+
+                System.out.println("Added by Thread : " + contact.getFirstName());
+
+            });
+
+            threads.add(thread);
+
+            thread.start();
+        }
+
+        for(Thread t : threads){
+
+            try{
+                t.join();
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("All contacts added using Threads");
+    }
+
     public static void main(String[] args){
 
         Scanner sc = new Scanner(System.in);
@@ -333,7 +379,8 @@ public class AddressBookAppApplication {
             System.out.println("15 Count Contacts by City (DB)");
             System.out.println("16 Count Contacts by State (DB)");
             System.out.println("17 Add Contact to Database");
-            System.out.println("18 Exit");
+            System.out.println("18 Add Multiple Contacts using Threads");
+            System.out.println("19 Exit");
 
             choice = sc.nextInt();
             sc.nextLine();
@@ -357,12 +404,13 @@ public class AddressBookAppApplication {
                 case 15 -> countContactsByCityDB();
                 case 16 -> countContactsByStateDB();
                 case 17 -> addContactToDatabase(addressBook,sc);
-                case 18 -> System.out.println("Exiting");
+                case 18 -> addMultipleContactsUsingThreads();
+                case 19 -> System.out.println("Exiting");
 
                 default -> System.out.println("Invalid Choice");
             }
 
-        }while(choice!=18);
+        }while(choice!=19);
 
         sc.close();
     }
