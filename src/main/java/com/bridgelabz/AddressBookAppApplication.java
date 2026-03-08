@@ -276,6 +276,22 @@ public class AddressBookAppApplication {
         contacts.forEach(System.out::println);
     }
 
+    // UC19 Count by City (DB)
+    public static void countContactsByCityDB(){
+
+        AddressBookDBService dbService = AddressBookDBService.getInstance();
+
+        dbService.countContactsByCity();
+    }
+
+    // UC19 Count by State (DB)
+    public static void countContactsByStateDB(){
+
+        AddressBookDBService dbService = AddressBookDBService.getInstance();
+
+        dbService.countContactsByState();
+    }
+
     public static void main(String[] args){
 
         Scanner sc = new Scanner(System.in);
@@ -298,7 +314,7 @@ public class AddressBookAppApplication {
             System.out.println("4 Search by City");
             System.out.println("5 Search by State");
             System.out.println("6 View Persons by City");
-            System.out.println("7 Count by City");
+            System.out.println("7 Count by City (Memory)");
             System.out.println("8 Sort by Name");
             System.out.println("9 Write TXT File");
             System.out.println("10 Write CSV File");
@@ -306,7 +322,9 @@ public class AddressBookAppApplication {
             System.out.println("12 Write JSON File");
             System.out.println("13 Read JSON File");
             System.out.println("14 Retrieve Contacts by Date");
-            System.out.println("15 Exit");
+            System.out.println("15 Count Contacts by City (DB)");
+            System.out.println("16 Count Contacts by State (DB)");
+            System.out.println("17 Exit");
 
             choice = sc.nextInt();
             sc.nextLine();
@@ -327,12 +345,14 @@ public class AddressBookAppApplication {
                 case 12 -> writeToJSON(addressBook);
                 case 13 -> readFromJSON();
                 case 14 -> retrieveContactsByDate(sc);
-                case 15 -> System.out.println("Exiting");
+                case 15 -> countContactsByCityDB();
+                case 16 -> countContactsByStateDB();
+                case 17 -> System.out.println("Exiting");
 
                 default -> System.out.println("Invalid Choice");
             }
 
-        }while(choice!=15);
+        }while(choice!=17);
 
         sc.close();
     }
