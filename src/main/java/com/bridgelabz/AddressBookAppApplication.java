@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 
 public class AddressBookAppApplication {
 
-    // Create Contact
+    // ---------- Create Contact ----------
     public static Contact createContact(Scanner sc){
 
         System.out.println("Enter Contact Details");
@@ -42,7 +42,7 @@ public class AddressBookAppApplication {
         return new Contact(firstName,lastName,address,city,state,zip,phone,email);
     }
 
-    // Add Contact
+    // ---------- Add Contact ----------
     public static void addContact(ArrayList<Contact> addressBook,Scanner sc){
 
         Contact contact = createContact(sc);
@@ -50,15 +50,15 @@ public class AddressBookAppApplication {
         boolean exists = addressBook.stream()
                 .anyMatch(c->c.getFirstName().equalsIgnoreCase(contact.getFirstName()));
 
-        if(exists)
+        if(exists){
             System.out.println("Contact already exists");
-        else{
+        }else{
             addressBook.add(contact);
             System.out.println("Contact Added Successfully");
         }
     }
 
-    // Add Contact to Database
+    // ---------- Add Contact to Database ----------
     public static void addContactToDatabase(ArrayList<Contact> addressBook, Scanner sc){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
@@ -73,7 +73,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // Edit Contact
+    // ---------- Edit Contact ----------
     public static void editContact(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter First Name to Edit: ");
@@ -104,7 +104,7 @@ public class AddressBookAppApplication {
         System.out.println("Contact Not Found");
     }
 
-    // Delete Contact
+    // ---------- Delete Contact ----------
     public static void deleteContact(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter First Name to Delete: ");
@@ -115,7 +115,7 @@ public class AddressBookAppApplication {
         System.out.println("Contact Deleted");
     }
 
-    // Search By City
+    // ---------- Search By City ----------
     public static void searchByCity(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter City: ");
@@ -126,7 +126,7 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // Search By State
+    // ---------- Search By State ----------
     public static void searchByState(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter State: ");
@@ -137,7 +137,7 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // View Persons By City
+    // ---------- View Persons By City ----------
     public static void viewPersonsByCity(List<Contact> contacts){
 
         Map<String,List<Contact>> cityMap =
@@ -151,7 +151,7 @@ public class AddressBookAppApplication {
         });
     }
 
-    // Count By City
+    // ---------- Count By City ----------
     public static void countByCity(List<Contact> contacts){
 
         Map<String,Long> cityCount =
@@ -160,7 +160,7 @@ public class AddressBookAppApplication {
         cityCount.forEach((city,count)->System.out.println(city+" -> "+count));
     }
 
-    // Sort By Name
+    // ---------- Sort By Name ----------
     public static void sortByName(List<Contact> contacts){
 
         contacts.stream()
@@ -168,7 +168,7 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // Write TXT
+    // ---------- Write TXT ----------
     public static void writeToFile(List<Contact> contacts){
 
         try{
@@ -189,7 +189,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // Write CSV
+    // ---------- Write CSV ----------
     public static void writeToCSV(List<Contact> contacts){
 
         try{
@@ -225,7 +225,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // Read CSV
+    // ---------- Read CSV ----------
     public static void readFromCSV(){
 
         try{
@@ -245,7 +245,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // Write JSON
+    // ---------- Write JSON ----------
     public static void writeToJSON(List<Contact> contacts){
 
         try{
@@ -265,7 +265,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // Read JSON
+    // ---------- Read JSON ----------
     public static void readFromJSON(){
 
         try{
@@ -286,7 +286,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // Retrieve by Date
+    // ---------- Retrieve by Date ----------
     public static void retrieveContactsByDate(Scanner sc){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
@@ -302,23 +302,21 @@ public class AddressBookAppApplication {
         contacts.forEach(System.out::println);
     }
 
-    // Count City DB
+    // ---------- Count City DB ----------
     public static void countContactsByCityDB(){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
-
         dbService.countContactsByCity();
     }
 
-    // Count State DB
+    // ---------- Count State DB ----------
     public static void countContactsByStateDB(){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
-
         dbService.countContactsByState();
     }
 
-    // UC21 Threads
+    // ---------- UC21 Threads ----------
     public static void addMultipleContactsUsingThreads(){
 
         List<Contact> contacts = List.of(
@@ -326,7 +324,6 @@ public class AddressBookAppApplication {
                 new Contact("Amit","Verma","MG Road","Delhi","Delhi","110001","9999999991","amit@gmail.com"),
                 new Contact("Rohit","Sharma","Main Road","Patna","Bihar","800001","9999999992","rohit@gmail.com"),
                 new Contact("Priya","Singh","Park Street","Kolkata","WB","700001","9999999993","priya@gmail.com")
-
         );
 
         List<Thread> threads = new ArrayList<>();
@@ -344,7 +341,6 @@ public class AddressBookAppApplication {
             });
 
             threads.add(thread);
-
             thread.start();
         }
 
@@ -352,8 +348,7 @@ public class AddressBookAppApplication {
 
             try{
                 t.join();
-            }
-            catch(Exception e){
+            }catch(Exception e){
                 e.printStackTrace();
             }
         }
@@ -361,6 +356,7 @@ public class AddressBookAppApplication {
         System.out.println("All contacts added using Threads");
     }
 
+    // ---------- MAIN ----------
     public static void main(String[] args){
 
         Scanner sc = new Scanner(System.in);
