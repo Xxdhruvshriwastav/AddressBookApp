@@ -84,7 +84,6 @@ public class AddressBookRestTest {
     @Test
     public void givenNewCity_whenUpdated_shouldSyncWithMemory(){
 
-        // Step 1: Retrieve contacts
         Response response = given()
                 .when()
                 .get("/contacts")
@@ -97,11 +96,9 @@ public class AddressBookRestTest {
 
         addressBookList.addAll(Arrays.asList(contacts));
 
-        // Step 2: Pick first contact
         ContactDTO contact = addressBookList.get(0);
         contact.setCity("Mumbai");
 
-        // Step 3: Update using PUT
         Response updateResponse = given()
                 .contentType("application/json")
                 .body(contact)
@@ -114,7 +111,6 @@ public class AddressBookRestTest {
 
         ContactDTO updatedContact = updateResponse.as(ContactDTO.class);
 
-        // Step 4: Sync memory
         for(int i=0;i<addressBookList.size();i++){
             if(addressBookList.get(i).getId() == updatedContact.getId()){
                 addressBookList.set(i, updatedContact);
@@ -124,8 +120,41 @@ public class AddressBookRestTest {
         boolean result = addressBookList.stream()
                 .anyMatch(c -> c.getCity().equals("Mumbai"));
 
-        System.out.println("Updated Contact City: " + updatedContact.getCity());
+        System.out.println("Updated Contact City : " + updatedContact.getCity());
 
         assertTrue(result);
+    }
+
+    // UC25 : Delete Contact
+    @Test
+    public void givenContact_whenDeleted_shouldSyncWithMemory(){
+
+        Response response = given()
+                .when()
+                .get("/contacts")
+                .then()
+                .statusCode(200)
+                .extract()
+                .response();
+
+        ContactDTO[] contacts = response.as(ContactDTO[].class);
+
+        addressBookList.addAll(Arrays.asList(contacts));
+
+        int initialSize = addressBookList.size();
+
+        ContactDTO contact = addressBookList.get(0);
+
+        given()
+                .when()
+                .delete("/contacts/" + contact.getId())
+                .then()
+                .statusCode(200);
+
+        addressBookList.removeIf(c -> c.getId() == contact.getId());
+
+        System.out.println("Deleted Contact : " + contact.getName());
+
+        assertEquals(initialSize - 1, addressBookList.size());
     }
 }
