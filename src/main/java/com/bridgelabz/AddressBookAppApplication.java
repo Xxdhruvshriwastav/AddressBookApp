@@ -56,6 +56,20 @@ public class AddressBookAppApplication {
         }
     }
 
+    public static void addContactToDatabase(ArrayList<Contact> addressBook, Scanner sc){
+
+        AddressBookDBService dbService = AddressBookDBService.getInstance();
+
+        Contact contact = createContact(sc);
+
+        boolean added = dbService.addContactToDB(contact);
+
+        if(added){
+            addressBook.add(contact);
+            System.out.println("Contact added successfully in DB and Memory");
+        }
+    }
+
     public static void editContact(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter First Name to Edit: ");
@@ -122,10 +136,8 @@ public class AddressBookAppApplication {
                 contacts.stream().collect(Collectors.groupingBy(Contact::getCity));
 
         cityMap.forEach((city,persons)->{
-
             System.out.println("\nCity: "+city);
             persons.forEach(System.out::println);
-
         });
     }
 
@@ -144,11 +156,10 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // UC13 TXT
+    // TXT
     public static void writeToFile(List<Contact> contacts){
 
         try{
-
             FileWriter writer = new FileWriter("addressbook.txt");
 
             for(Contact c:contacts){
@@ -165,7 +176,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // UC14 CSV
+    // CSV
     public static void writeToCSV(List<Contact> contacts){
 
         try{
@@ -220,7 +231,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // UC15 JSON
+    // JSON
     public static void writeToJSON(List<Contact> contacts){
 
         try{
@@ -260,7 +271,6 @@ public class AddressBookAppApplication {
         }
     }
 
-    // UC18 Retrieve by Date Range
     public static void retrieveContactsByDate(Scanner sc){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
@@ -276,7 +286,6 @@ public class AddressBookAppApplication {
         contacts.forEach(System.out::println);
     }
 
-    // UC19 Count by City (DB)
     public static void countContactsByCityDB(){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
@@ -284,7 +293,6 @@ public class AddressBookAppApplication {
         dbService.countContactsByCity();
     }
 
-    // UC19 Count by State (DB)
     public static void countContactsByStateDB(){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
@@ -324,7 +332,8 @@ public class AddressBookAppApplication {
             System.out.println("14 Retrieve Contacts by Date");
             System.out.println("15 Count Contacts by City (DB)");
             System.out.println("16 Count Contacts by State (DB)");
-            System.out.println("17 Exit");
+            System.out.println("17 Add Contact to Database");
+            System.out.println("18 Exit");
 
             choice = sc.nextInt();
             sc.nextLine();
@@ -347,12 +356,13 @@ public class AddressBookAppApplication {
                 case 14 -> retrieveContactsByDate(sc);
                 case 15 -> countContactsByCityDB();
                 case 16 -> countContactsByStateDB();
-                case 17 -> System.out.println("Exiting");
+                case 17 -> addContactToDatabase(addressBook,sc);
+                case 18 -> System.out.println("Exiting");
 
                 default -> System.out.println("Invalid Choice");
             }
 
-        }while(choice!=17);
+        }while(choice!=18);
 
         sc.close();
     }
