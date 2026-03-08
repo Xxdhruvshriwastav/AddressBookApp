@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 
 public class AddressBookAppApplication {
 
+    // Create Contact
     public static Contact createContact(Scanner sc){
 
         System.out.println("Enter Contact Details");
@@ -41,6 +42,7 @@ public class AddressBookAppApplication {
         return new Contact(firstName,lastName,address,city,state,zip,phone,email);
     }
 
+    // Add Contact
     public static void addContact(ArrayList<Contact> addressBook,Scanner sc){
 
         Contact contact = createContact(sc);
@@ -56,6 +58,7 @@ public class AddressBookAppApplication {
         }
     }
 
+    // Add Contact to Database
     public static void addContactToDatabase(ArrayList<Contact> addressBook, Scanner sc){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
@@ -70,6 +73,7 @@ public class AddressBookAppApplication {
         }
     }
 
+    // Edit Contact
     public static void editContact(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter First Name to Edit: ");
@@ -100,6 +104,7 @@ public class AddressBookAppApplication {
         System.out.println("Contact Not Found");
     }
 
+    // Delete Contact
     public static void deleteContact(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter First Name to Delete: ");
@@ -110,6 +115,7 @@ public class AddressBookAppApplication {
         System.out.println("Contact Deleted");
     }
 
+    // Search By City
     public static void searchByCity(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter City: ");
@@ -120,6 +126,7 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
+    // Search By State
     public static void searchByState(ArrayList<Contact> addressBook,Scanner sc){
 
         System.out.print("Enter State: ");
@@ -130,6 +137,7 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
+    // View Persons By City
     public static void viewPersonsByCity(List<Contact> contacts){
 
         Map<String,List<Contact>> cityMap =
@@ -143,6 +151,7 @@ public class AddressBookAppApplication {
         });
     }
 
+    // Count By City
     public static void countByCity(List<Contact> contacts){
 
         Map<String,Long> cityCount =
@@ -151,6 +160,7 @@ public class AddressBookAppApplication {
         cityCount.forEach((city,count)->System.out.println(city+" -> "+count));
     }
 
+    // Sort By Name
     public static void sortByName(List<Contact> contacts){
 
         contacts.stream()
@@ -158,7 +168,7 @@ public class AddressBookAppApplication {
                 .forEach(System.out::println);
     }
 
-    // TXT
+    // Write TXT
     public static void writeToFile(List<Contact> contacts){
 
         try{
@@ -179,7 +189,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // CSV
+    // Write CSV
     public static void writeToCSV(List<Contact> contacts){
 
         try{
@@ -215,6 +225,7 @@ public class AddressBookAppApplication {
         }
     }
 
+    // Read CSV
     public static void readFromCSV(){
 
         try{
@@ -234,7 +245,7 @@ public class AddressBookAppApplication {
         }
     }
 
-    // JSON
+    // Write JSON
     public static void writeToJSON(List<Contact> contacts){
 
         try{
@@ -254,6 +265,7 @@ public class AddressBookAppApplication {
         }
     }
 
+    // Read JSON
     public static void readFromJSON(){
 
         try{
@@ -274,6 +286,7 @@ public class AddressBookAppApplication {
         }
     }
 
+    // Retrieve by Date
     public static void retrieveContactsByDate(Scanner sc){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
@@ -289,6 +302,7 @@ public class AddressBookAppApplication {
         contacts.forEach(System.out::println);
     }
 
+    // Count City DB
     public static void countContactsByCityDB(){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
@@ -296,6 +310,7 @@ public class AddressBookAppApplication {
         dbService.countContactsByCity();
     }
 
+    // Count State DB
     public static void countContactsByStateDB(){
 
         AddressBookDBService dbService = AddressBookDBService.getInstance();
